@@ -11,7 +11,7 @@ IPv6Regex="^(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([
 
 [ "$cfddns_ttl" = "" ] && cfddns_ttl="1"
 
-if [ "$cfddns_name" = "@" ];then
+if [ "$cfddns_name" = "@" ] || [ -z "$cfddns_name" ];then
 	cfddns_name_domain=$cfddns_domain
 else
 	cfddns_name_domain=$cfddns_name.$cfddns_domain
@@ -49,7 +49,7 @@ get_info(){
 		# CFDDNS的RECORD ID
 		cfddns_id=`echo $cfddns_result | awk -F"","" '{print $1}' | sed 's/{.*://g' | sed 's/\"//g'`
 		# CFDDNS的RECORD IP
-		record_ip=`echo $cfddns_result | awk -F"","" '{print $6}' | sed -e 's/\"//g' -e 's/content://'`
+		record_ip=`echo $cfddns_result | awk -F"","" '{print $4}' | sed -e 's/\"//g' -e 's/content://'`
 		echo_date CloudFlare IP${ip_type}为 $record_ip
 	else
 		dbus set cfddns_status_${ip_type}="【$LOGTIME】：获取IP${ip_type}解析记录错误！"
